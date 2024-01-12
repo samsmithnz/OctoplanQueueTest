@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      AZURE_STORAGE_QUEUE_NAME: 'octoplan'
+    steps:
+      - uses: actions/checkout@v3
+      - name: add item to queue
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            payload=$(jq -n --arg event "event4" --arg data "data1" --arg user "user1" '{event: $event, data: $data, user: $user}' | jq -r tostring)
+            az storage message put --queue-name ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content $payload --connection-string "${{ env.AZURE_STORAGE_CONNECTION_STRING }}"
