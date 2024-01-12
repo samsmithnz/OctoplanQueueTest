@@ -10,11 +10,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      AZURE_STORAGE_QUEUE_NAME: 'octoplan'
     steps:
       - uses: actions/checkout@v3
-      - name: Run a one-line script
-        run: echo Hello, world!
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: add item to queue
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            $message = "Hello World"
+            az storage message put --queue-name ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content $message --connection-string ${{ env.AZURE_STORAGE_CONNECTION_STRING }}
