@@ -20,5 +20,4 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-            $message = "Hello World"
-            az storage message put --queue-name ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content $message --connection-string ${{ env.AZURE_STORAGE_CONNECTION_STRING }}
+            az storage message put -q ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content "Hello World" --connection-string ${{ env.AZURE_STORAGE_CONNECTION_STRING }}
