@@ -20,4 +20,5 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-            az storage message put -q ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content "Hello World" --connection-string "${{ env.AZURE_STORAGE_CONNECTION_STRING }}"
+            payload=$(jq -n --arg event "event1" --arg data "data1" --arg user "user1" '{event: $event, data: $data, user: $user}')
+            az storage message put -q ${{ env.AZURE_STORAGE_QUEUE_NAME }} --content $payload --connection-string "${{ env.AZURE_STORAGE_CONNECTION_STRING }}"
